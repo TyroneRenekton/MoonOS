@@ -102,7 +102,12 @@ p_mode_start:
 
 	mov byte [gs:160], 'V'
 
-	jmp $
+	jmp SELECTOR_CODE:enter_kernel
+
+enter_kernel:
+	call kernel_init
+	mov esp, 0xc009f000
+        jmp KERNEL_ENTRY_POINT	
 setup_page:
 	mov ecx, 4096
 	mov esi, 0
@@ -181,3 +186,50 @@ rd_disk_m_32:
 	add ebx, 2
 	loop .go_on_read
 	ret 
+
+kernel_init:
+	xor eax, eax
+	xor ebx, ebx
+	xor ecx, ecx
+	xor edx, edx
+
+	mov dx, [KERNEL_BIN_BASE_ADDR+42] ; program-header 大小
+	mov ebx, [KERNEL_BIN_BASE_ADDR+28] ; 第一个program的偏移量
+
+	add ebx, KERNEL_BIN_BASE_ADDR
+	mov cx, [KERNEL_BIN_BASE_ADDR+44]
+
+.each_segment:
+	cmp byte [ebx+0], 0
+	je .PTNULL
+	; 实现copy 字节的功能，将当前段大小的字节挪到当前段在内存中的开始地址
+	; 将段大小入栈
+	push dword [ebx+16]
+	; 将offset加载到eax
+	mov eax, [ebx+4]
+	add eax, KERNEL_BIN_BASE_ADDR	
+	push eax ; 将源地址入栈
+	push dword [ebx+8] ; 将目标地址入栈
+	call memcpy 
+	add esp, 12
+.PTNULL:	
+	add ebx, edx
+	loop .each_segment
+	ret 
+
+memcpy: 
+	cld
+	push ebp 
+	mov ebp, esp
+	push ecx
+	mov edi, [ebp+8]
+	mov esi, [ebp+12]
+	mov ecx, [ebp+16]
+	rep movsb ; 逐字节copy
+	; 恢复环境 
+	pop ecx, 
+	pop ebp
+	ret
+
+	
+		
