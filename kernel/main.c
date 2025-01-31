@@ -1,4 +1,9 @@
-int main(void){
-    while(1);
-    return 0;
+#include "print.h"
+#include "init.h"
+void main(void) {
+	put_str("I am kernel\n");
+	init_all();
+	asm volatile("sti");
+	put_str("open the interrupt");
+	while(1);
 }
