@@ -1,10 +1,11 @@
 #include "string.h"
 #include "global.h"
 #include "debug.h"
+#define NULL ((void*)0)
 
 void memset(void* dst_, uint8_t value, uint32_t size) {
 	ASSERT(dst_ != NULL);
-	uint8_t* dst = (uint8_t) dst_;
+	uint8_t* dst = (uint8_t*) dst_;
 	while(size-- >= 0) {
 		*dst++ = value;
 	}
@@ -46,7 +47,7 @@ uint32_t strlen(const char* str) {
 	return (p - str -1);
 }
 
-uint8_t strcmp(const char* a, const char* b) {
+int8_t strcmp(const char* a, const char* b) {
 	ASSERT(a != NULL && b != NULL);
 	while(*a != 0 && *a==*b) {
 		a++;
@@ -66,16 +67,17 @@ char* strchar(const char* str, const uint8_t ch) {
 	return NULL;
 }
 
-char* strrchar(const char* str, const uint8_t ch) {
-	ASSERT(str != NULL);
-	const char* last_char = NULL;
-	while(*str != 0) {
-		if (*str == ch） {
-			last_char = (char*)str;
-		}
-		str++;
-	}
-	return 0;
+char* strrchr(const char* str, const uint8_t ch) {
+   ASSERT(str != NULL);
+   const char* last_char = NULL;
+   /* 从头到尾遍历一次,若存在ch字符,last_char总是该字符最后一次出现在串中的地址(不是下标,是地址)*/
+   while (*str != 0) {
+      if (*str == ch) {
+	 last_char = str;
+      }
+      str++;
+   }
+   return (char*)last_char;
 }
 
 /* 将字符串src_拼接到dst_后,将回拼接的串地址 */
