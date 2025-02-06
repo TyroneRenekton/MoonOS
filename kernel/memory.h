@@ -14,8 +14,8 @@ enum pool_flags {
 #define	 PG_US_U  4	// U/S 属性位值, 用户级#endif
 
 struct virtual_addr {
-	struct bitmap vddr_bitmap;
-	uint32_t vddr_start;
+	struct bitmap vaddr_bitmap;
+	uint32_t vaddr_start;
 };
 
 extern struct pool kernel_pool, user_pool;

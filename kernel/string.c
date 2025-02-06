@@ -1,9 +1,10 @@
 #include "string.h"
 #include "global.h"
 #include "debug.h"
-#define NULL ((void*)0)
+#include "print.h"
+#include "stdint.h"
 
-void memset(void* dst_, uint8_t value, uint32_t size) {
+void memset(void* dst_, uint8_t value, int size) {
 	ASSERT(dst_ != NULL);
 	uint8_t* dst = (uint8_t*) dst_;
 	while(size-- >= 0) {
@@ -11,7 +12,7 @@ void memset(void* dst_, uint8_t value, uint32_t size) {
 	}
 }
 
-void memcpy(void* dst_, const void* src_, uint32_t size) {
+void memcpy(void* dst_, const void* src_, int size) {
 	ASSERT(dst_ != NULL && src_ != NULL);
         uint8_t* dst = dst_;
 	const uint8_t* src = src_;
@@ -20,7 +21,7 @@ void memcpy(void* dst_, const void* src_, uint32_t size) {
 	}
 }
 
-int memcmp(const void* a_, const void* b_, uint32_t size) {
+int memcmp(const void* a_, const void* b_, int size) {
 	const char* a = a_;
 	const char* b = b_;
 	ASSERT(a != NULL && b != NULL);
